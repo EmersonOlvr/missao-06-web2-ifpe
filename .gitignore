@@ -4,6 +4,7 @@ target/
 .mvn
 mvnw*
 /bin/
+/src/test/
 
 ### STS ###
 .apt_generated
