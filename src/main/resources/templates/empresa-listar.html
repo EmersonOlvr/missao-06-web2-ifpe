@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<th:block th:insert="/includes/include.html :: bootstrap-css"></th:block>
+	
+	<script type="text/javascript">
+		var idEmpresa = 0;
+		function setIdEmpresa(novoIdEmpresa) {
+			idEmpresa = novoIdEmpresa;
+		}
+		function redirecionar() {
+			window.location.href="/empresas/excluir/"+idEmpresa;
+		}
+	</script>
+	
+	<title>Empresas</title>
+</head>
+<body>
+	<form>
+		<div class="input-group mb-3">
+			<input type="search" class="form-control" name="q" placeholder="Filtrar empresas por nome..." 
+				aria-label="Filtrar empresas por nome...">
+			<div class="input-group-append">
+				<input type="submit" class="btn btn-outline-primary" value="Filtrar">
+			</div>
+		</div>
+	</form>
+	
+	<div class="alert alert-danger" th:if="${!#strings.isEmpty(msgErro)}">
+		[[${msgErro}]]
+	</div>
+	
+	<table class="table table-bordered table-hover">
+		<thead>
+			<th>Nome</th>
+			<th>Nome abreviado</th>
+			<th>E-mail</th>
+			<th>Principal</th>
+			<th colspan="2">Ações</th>
+		</thead>
+		<tbody>
+			<tr th:if="${!#lists.isEmpty(empresas)}" th:each="empresa : ${empresas}">
+				<td>[[${empresa.nome}]]</td>
+				<td>[[${empresa.nomeAbreviado}]]</td>
+				<td>[[${empresa.email}]]</td>
+				<td th:if="${empresa.principal}">Sim</td>
+				<td th:unless="${empresa.principal}">Não</td>
+				
+				<td><a th:href="|/empresas/${empresa.id}|" class="btn btn-sm btn-outline-primary">Editar</a></td>
+				<td><button th:href="|/empresas/excluir/${empresa.id}|" class="btn btn-sm btn-outline-danger"
+					data-toggle="modal" data-target="#confirmacaoExclusao" 
+					th:onclick="'javascript:setIdEmpresa(\'' +${empresa.id}+ '\');'">Exluir</button></td>
+			</tr>
+			<tr th:if="${#lists.isEmpty(empresas)}">
+				<td colspan="5" style="font-style: italic;">Nenhuma empresa encontrada.</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<a href="/empresas/inserir">Inserir Empresa</a>
+	<br>
+	
+	<!-- Modal de confirmação de exclusão -->
+	<div class="modal fade" id="confirmacaoExclusao" tabindex="-1" role="dialog" aria-labelledby="confirmacaoExclusaoLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="confirmacaoExclusaoLabel">Confirmação</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					Confirma a exclusão?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+					<button type="submit" class="btn btn-primary" onclick="redirecionar()">Sim, excluir</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<th:block th:insert="/includes/include.html :: bootstrap-js"></th:block>
+</body>
+</html>

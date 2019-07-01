@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<th:block th:insert="/includes/include.html :: bootstrap-css"></th:block>
+	
+	<style type="text/css">
+		.labelPrincipalSim, .labelAtivaSim {
+			margin-right: 15px;
+		}
+	</style>
+	
+	<title>[[${titulo}]]</title>
+</head>
+<body>
+	<div class="form" style="width: 500px">
+		<form th:object="${empresa}" method="post">
+			<div class="alert alert-danger" th:if="${#fields.hasErrors()}">
+				<div th:each="msgErro : ${#fields.allErrors()}">
+					[[${msgErro}]]<br>
+				</div>
+			</div>
+			<div class="alert alert-success" th:if="${!#strings.isEmpty(msgSucesso)}">
+				[[${msgSucesso}]]
+			</div>
+			
+			<input type="hidden" th:field="*{id}">
+			<div class="form-group row">
+				<label for="nome" class="col-sm-5 col-form-label">Nome</label>
+				<div class="col-sm-7">
+					<input class="form-control" type="text" th:field="*{nome}">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="nomeAbreviado" class="col-sm-5 col-form-label">Nome abreviado</label>
+				<div class="col-sm-7">
+					<input class="form-control" type="text" th:field="*{nomeAbreviado}">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="email" class="col-sm-5 col-form-label">E-mail</label>
+				<div class="col-sm-7">
+					<input class="form-control" type="text" th:field="*{email}">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-sm-5 col-form-label">Principal</label>
+				<div class="col-sm-7 mt-2">
+					<input type="radio" th:field="*{principal}" value="true"> <label class="labelPrincipalSim" for="principal1">Sim</label>
+					<input type="radio" th:field="*{principal}" value="false"> <label for="principal2">Não</label>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-sm-5 col-form-label">Situação</label>
+				<div class="col-sm-7 mt-2">
+					<input type="radio" th:field="*{ativa}" value="true"> <label class="labelAtivaSim" for="ativa1">Ativa</label>
+					<input type="radio" th:field="*{ativa}" value="false"> <label for="ativa2">Inativa</label>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-7">
+					<input class="btn btn-primary" type="submit" value="Salvar">
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<th:block th:insert="/includes/include.html :: bootstrap-js"></th:block>
+</body>
+</html>

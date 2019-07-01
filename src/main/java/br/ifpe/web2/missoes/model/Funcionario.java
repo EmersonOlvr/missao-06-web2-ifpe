@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -26,20 +25,20 @@ public class Funcionario {
 	
 	@Column(nullable = false, length = 8)
 	@NotBlank(message = "Informe a matrícula")
-	@Max(value = 8, message = "A matrícula deve ter no máximo 8 dígitos")
-	private Integer matricula;
+	@Size(max = 8, message = "A matrícula deve ter no máximo {max} dígitos")
+	private String matricula;
 	
 	@Column(nullable = false, length = 70)
 	@NotBlank(message = "Informe o nome")
 	@Size(max = 70, message = "O nome deve ter no máximo {max} caracteres")
 	private String nome;
 	
-	@Column(nullable = false, length = 11)
+	@Column(nullable = false, length = 14)
 	@NotBlank(message = "Informe o CPF")
-	@Size(max = 11, message = "O CPF deve ter no máximo {max} dígitos")
+	@Size(max = 14, message = "O CPF deve ter no máximo {max} caracteres")
 	private String cpf;
 	
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataNascimento;
 	
 	@OneToOne(optional = false)
@@ -52,7 +51,7 @@ public class Funcionario {
 	
 	
 	public Funcionario() {}
-	public Funcionario(Integer matricula, String nome, String cpf, LocalDate dataNascimento, Cargo cargo,
+	public Funcionario(String matricula, String nome, String cpf, LocalDate dataNascimento, Cargo cargo,
 			Empresa empresa) {
 		this.matricula = matricula;
 		this.nome = nome;
@@ -69,10 +68,10 @@ public class Funcionario {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public Integer getMatricula() {
+	public String getMatricula() {
 		return matricula;
 	}
-	public void setMatricula(Integer matricula) {
+	public void setMatricula(String matricula) {
 		this.matricula = matricula;
 	}
 	public String getNome() {

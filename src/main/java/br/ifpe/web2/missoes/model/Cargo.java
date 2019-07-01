@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -26,6 +27,7 @@ public class Cargo {
 	private String descricaoAbreviada;
 	
 	@Column(nullable = false)
+	@NotNull(message = "Informe a situação")
 	private Boolean ativo;
 
 	
@@ -62,6 +64,34 @@ public class Cargo {
 	}
 	public void setAtivo(Boolean ativo) {
 		this.ativo = ativo;
+	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cargo other = (Cargo) obj;
+		if (ativo == null) {
+			if (other.ativo != null)
+				return false;
+		} else if (!ativo.equals(other.ativo))
+			return false;
+		if (descricao == null) {
+			if (other.descricao != null)
+				return false;
+		} else if (!descricao.equals(other.descricao))
+			return false;
+		if (descricaoAbreviada == null) {
+			if (other.descricaoAbreviada != null)
+				return false;
+		} else if (!descricaoAbreviada.equals(other.descricaoAbreviada))
+			return false;
+		return true;
 	}
 	
 }

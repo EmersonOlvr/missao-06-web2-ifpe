@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<th:block th:insert="/includes/include.html :: bootstrap-css"></th:block>
+	
+	<script type="text/javascript">
+		var idCargo = 0;
+		function setIdCargo(novoIdCargo) {
+			idCargo = novoIdCargo;
+		}
+		function redirecionar() {
+			window.location.href="/cargos/excluir/"+idCargo;
+		}
+	</script>
+	
+	<title>Cargos</title>
+</head>
+<body>
+	<form>
+		<div class="input-group mb-3">
+			<input type="search" class="form-control" name="q" placeholder="Filtrar cargos por descrição..." 
+				aria-label="Filtrar cargos por descrição...">
+			<div class="input-group-append">
+				<input type="submit" class="btn btn-outline-primary" value="Filtrar">
+			</div>
+		</div>
+	</form>
+	
+	<div class="alert alert-danger" th:if="${!#strings.isEmpty(msgErro)}">
+		[[${msgErro}]]
+	</div>
+	
+	<table class="table table-bordered table-hover">
+		<thead>
+			<th>Descrição</th>
+			<th>Descrição abreviada</th>
+			<th>Situação</th>
+			<th colspan="2">Ações</th>
+		</thead>
+		<tbody>
+			<tr th:if="${!#lists.isEmpty(cargos)}" th:each="cargo : ${cargos}">
+				<td>[[${cargo.descricao}]]</td>
+				<td>[[${cargo.descricaoAbreviada}]]</td>
+				<td th:if="${cargo.ativo}">Ativo</td>
+				<td th:unless="${cargo.ativo}">Inativo</td>
+				
+				<td><a th:href="|/cargos/${cargo.id}|" class="btn btn-sm btn-outline-primary">Editar</a></td>
+				<td><button th:href="|/cargos/excluir/${cargo.id}|" class="btn btn-sm btn-outline-danger"
+					data-toggle="modal" data-target="#confirmacaoExclusao" 
+					th:onclick="'javascript:setIdCargo(\'' +${cargo.id}+ '\');'">Exluir</button></td>
+			</tr>
+			<tr th:if="${#lists.isEmpty(cargos)}">
+				<td colspan="5" style="font-style: italic;">Nenhum cargo encontrado.</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<a href="/cargos/inserir">Inserir Cargo</a>
+	<br>
+	
+	<!-- Modal de confirmação de exclusão -->
+	<div class="modal fade" id="confirmacaoExclusao" tabindex="-1" role="dialog" aria-labelledby="confirmacaoExclusaoLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="confirmacaoExclusaoLabel">Confirmação</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					Confirma a exclusão?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+					<button type="submit" class="btn btn-primary" onclick="redirecionar()">Sim, excluir</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<th:block th:insert="/includes/include.html :: bootstrap-js"></th:block>
+</body>
+</html>

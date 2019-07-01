@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -18,6 +19,7 @@ public class Empresa {
 	
 	@Column(nullable = false, length = 50)
 	@NotBlank(message = "Informe o nome")
+	@Size(max = 50, message = "O nome deve ter no máximo {max} caracteres")
 	private String nome;
 	
 	@Column(length = 10)
@@ -29,17 +31,24 @@ public class Empresa {
 	private String email;
 	
 	@Column(nullable = false)
+	@NotNull(message = "Informe se a empresa é principal")
 	private Boolean principal;
+	
+	@Column(nullable = false)
+	@NotNull(message = "Informe a situação")
+	private Boolean ativa;
 	
 	
 	public Empresa() {
 		this.principal = true;
+		this.ativa = true;
 	}
-	public Empresa(String nome, String nomeAbreviado, String email, Boolean principal) {
+	public Empresa(String nome, String nomeAbreviado, String email, Boolean principal, Boolean ativa) {
 		this.nome = nome;
 		this.nomeAbreviado = nomeAbreviado;
 		this.email = email;
 		this.principal = principal;
+		this.ativa = ativa;
 	}
 	
 	
@@ -72,6 +81,12 @@ public class Empresa {
 	}
 	public void setPrincipal(Boolean principal) {
 		this.principal = principal;
+	}
+	public Boolean getAtiva() {
+		return ativa;
+	}
+	public void setAtiva(Boolean ativa) {
+		this.ativa = ativa;
 	}
 	
 }

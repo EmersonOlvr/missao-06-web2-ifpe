@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<th:block th:insert="/includes/include.html :: bootstrap-css"></th:block>
+	
+	<script>
+		function formatar(mascara, documento) {
+			var i = documento.value.length;
+			var saida = mascara.substring(0,1);
+			var texto = mascara.substring(i)
+			
+			if (texto.substring(0,1) != saida) {
+				documento.value += texto.substring(0,1);
+			}
+		}
+	</script>
+	
+	<title>Inserir Funcionário</title>
+</head>
+<body>
+	<div class="form" style="width: 500px">
+		<div th:if="${cargos.size() == 0 || empresas.size() == 0}" class="alert alert-danger">
+			<div th:if="${cargos.size() == 0}">Entidade Cargo sem dados para seleção.</div>
+			<div th:if="${empresas.size() == 0}">Entidade Empresa sem dados para seleção.</div>
+			<div><br><a href="/"><span style="font-size: 14pt">«</span> Voltar</a></div>
+		</div>
+		
+		<form th:if="${cargos.size() > 0 && empresas.size() > 0}" th:object="${funcionario}" 
+			th:action="@{/funcionarios/inserir}" method="post">
+			<div class="alert alert-danger" th:if="${#fields.hasErrors()}">
+				<div th:each="msgErro : ${#fields.allErrors()}">
+					[[${msgErro}]]<br>
+				</div>
+			</div>
+			<div class="alert alert-success" th:if="${!#strings.isEmpty(msgSucesso)}">
+				[[${msgSucesso}]]
+			</div>
+			
+			<div class="form-group row">
+				<label for="matricula" class="col-sm-5 col-form-label">Matrícula</label>
+				<div class="col-sm-7">
+					<input class="form-control" type="number" th:field="*{matricula}">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="nome" class="col-sm-5 col-form-label">Nome</label>
+				<div class="col-sm-7">
+					<input class="form-control" type="text" th:field="*{nome}">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="cpf" class="col-sm-5 col-form-label">CPF</label>
+				<div class="col-sm-7">
+					<input class="form-control" type="text" th:field="*{cpf}" onkeypress="formatar('###.###.###-##', this)" maxlength="14">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="dataNascimento" class="col-sm-5 col-form-label">Data de Nascimento</label>
+				<div class="col-sm-7">
+					<input class="form-control" type="date" th:field="*{dataNascimento}">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="cargo" class="col-sm-5 col-form-label">Cargo</label>
+				<div class="col-sm-7">
+					<select class="form-control" th:field="*{cargo}">
+						<option value="">Selecione...</option>
+						<option th:if="${!#lists.isEmpty(cargos)}"
+							th:each="cargo : ${cargos}" th:value="${cargo.id}">[[${cargo.descricao}]]</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="empresa" class="col-sm-5 col-form-label">Empresa</label>
+				<div class="col-sm-7">
+					<select class="form-control" th:field="*{empresa}">
+						<option value="">Selecione...</option>
+						<option th:if="${!#lists.isEmpty(empresas)}" 
+							th:each="empresa : ${empresas}" th:value="${empresa.id}">[[${empresa.nome}]]</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-7">
+					<input class="btn btn-primary" type="submit" value="Salvar">
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<th:block th:insert="/includes/include.html :: bootstrap-js"></th:block>
+</body>
+</html>
