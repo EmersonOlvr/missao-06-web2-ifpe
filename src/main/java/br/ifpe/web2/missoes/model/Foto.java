@@ -15,8 +15,8 @@ import org.hibernate.annotations.GenericGenerator;
 public class Foto {
 
 	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	@GeneratedValue(generator = "uuid2")
+	@GenericGenerator(name = "uuid2", strategy = "uuid2")
 	private String id;
 	
 	@ManyToOne(optional = false)

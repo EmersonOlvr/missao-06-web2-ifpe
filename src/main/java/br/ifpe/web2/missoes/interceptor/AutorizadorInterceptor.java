@@ -17,7 +17,8 @@ public class AutorizadorInterceptor implements HandlerInterceptor {
 	private static final String[] DEP_AUTORIZADOS = {"Gestão de Pessoas"};
 	
 	private static final String[] PAGINAS_DESLOGADO = {"/", "/login"};
-	private static final String[] PAGINAS_LOGADO = {PAGINA_HOME, "/sair", "/funcionarios/", "/cargos/", "/empresas/", "/funcionarios/filtrar"};
+	private static final String[] PAGINAS_LOGADO = {PAGINA_HOME, PAGINA_ACESSO_NEGADO, "/sair", 
+													"/funcionarios/", "/cargos/", "/empresas/"};
 	private static final String[] PAGINAS_PRIVADAS = {"/funcionarios/inserir", "/funcionarios/editar/", "/funcionarios/excluir/"};
 	
 	@Override
@@ -33,18 +34,9 @@ public class AutorizadorInterceptor implements HandlerInterceptor {
 			return true;
 		}
 		
-		for (String paginaLogado : PAGINAS_LOGADO) {
-			if (contextPath.equals(paginaLogado)) {
-				if (funcEstaLogado) {
-					return true;
-				} else {
-					response.sendRedirect("/login");
-					return false;
-				}
-			}
-		}
 		for (String paginaPrivada : PAGINAS_PRIVADAS) {
 			if (contextPath.contains(paginaPrivada)) {
+				//System.out.println("paginaPrivada: "+contextPath);
 				if (funcEstaLogado) {
 					for (String depAutorizado : DEP_AUTORIZADOS) {
 						if (funcLogado.getDepartamento().equalsIgnoreCase(depAutorizado)) {
@@ -54,13 +46,25 @@ public class AutorizadorInterceptor implements HandlerInterceptor {
 					request.getRequestDispatcher(PAGINA_ACESSO_NEGADO).forward(request, response);
 					return false;
 				} else {
-					response.sendRedirect("/login");
+					response.sendRedirect("/login?destino="+contextPath);
+					return false;
+				}
+			}
+		}
+		for (String paginaLogado : PAGINAS_LOGADO) {
+			if (contextPath.contains(paginaLogado)) {
+				//System.out.println("paginaLogado: "+contextPath);
+				if (funcEstaLogado) {
+					return true;
+				} else {
+					response.sendRedirect("/login?destino="+contextPath);
 					return false;
 				}
 			}
 		}
 		for (String paginaDeslogado : PAGINAS_DESLOGADO) {
 			if (contextPath.equals(paginaDeslogado)) {
+				//System.out.println("paginaDeslogado");
 				if (!funcEstaLogado) {
 					return true;
 				} else {

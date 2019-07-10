@@ -187,7 +187,9 @@ public class FuncionarioService {
 			if (pf.getDataInicio() != null && pf.getDataFim() == null) {
 				erros.add("Informe a Data do Fim do Período de Ferias");
 			} else if (pf.getDataFim() != null && pf.getDataInicio() == null) {
-				erros.add("Informe a Data do Início do Período de Ferias");
+				erros.add("Informe a Data de Início do Período de Ferias");
+			} else if (pf.getDataFim().isBefore(pf.getDataInicio()) || pf.getDataFim().isEqual(pf.getDataInicio())) {
+				erros.add("A Data do Fim não pode ser igual ou anterior à Data de Início do Período de Férias");
 			}
 		}
 		

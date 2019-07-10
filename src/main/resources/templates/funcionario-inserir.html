@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -158,7 +158,7 @@
 							<input th:if="${mostrarInputsOmitidos}" type="hidden" th:field="*{periodoFerias.id}">
 							<input th:if="${mostrarInputsOmitidos}" type="hidden" th:field="*{periodoFerias.funcionario}">
 							<div class="col-md-6 mt-2">
-								<label for="periodoFerias.dataInicio" class="lbl-end font-italic mb-0">Data do Início <span class="ast">*</span></label>
+								<label for="periodoFerias.dataInicio" class="lbl-end font-italic mb-0">Data de Início <span class="ast">*</span></label>
 								<input class="form-control" type="date" th:field="*{periodoFerias.dataInicio}">
 							</div>
 							<div class="col-md-6 mt-2">

@@ -17,19 +17,19 @@ import br.ifpe.web2.missoes.model.Funcionario;
 import br.ifpe.web2.missoes.service.FuncionarioService;
 
 @Controller
-public class LoginController {
-
+public class HomeController {
+	
 	@Autowired
 	private FuncionarioService funcionarioService;
 
 	@GetMapping(value = {"/", "/login"})
-	public String viewLogin() {
+	public String viewLogin(Model model) {
 		return "/login";
 	}
 
-	@PostMapping("/login")
+	@PostMapping(value = {"/", "/login"})
 	public String login(@RequestParam(required = false) String matricula, @RequestParam(required = false) String senha,
-			HttpSession session, Model model) 
+			HttpSession session, @RequestParam(required = false) String destino, Model model) 
 	{
 		if (Strings.isBlank(matricula)) {
 			model.addAttribute("msgErro", "Informe a matrícula");
@@ -44,6 +44,9 @@ public class LoginController {
 		if (funcionarioExistente.isPresent()) {
 			if (BCrypt.checkpw(senha, funcionarioExistente.get().getSenha())) {
 				session.setAttribute("funcionarioLogado", funcionarioExistente.get());
+				if (!Strings.isBlank(destino)) {
+					return "redirect:"+destino;
+				}
 				return "redirect:/home";
 			}
 		}
@@ -51,5 +54,21 @@ public class LoginController {
 		model.addAttribute("msgErro", "Matrícula e/ou senha incorreta(s).");
 		return "/login";
 	}
-
+	
+	@GetMapping("/home")
+	public String viewHome() {
+		return "/home";
+	}
+	
+	@GetMapping("/acesso-negado")
+	public String viewAcessoNegado() {
+		return "/acesso-negado";
+	}
+	
+	@GetMapping("/sair")
+	public String sair(HttpSession session) {
+		session.invalidate();
+		return "redirect:/";
+	}
+	
 }

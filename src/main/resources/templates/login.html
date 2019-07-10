@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
 	<title>Login</title>
@@ -12,7 +12,7 @@
 			[[${msgErro}]]
 		</div>
 		
-		<form action="/login" method="post">
+		<form method="post">
 			<div>Matrícula: <input type="text" name="matricula" class="form-control"></div>
 			<div>Senha: <input type="password" name="senha" class="form-control"></div>
 			<br>

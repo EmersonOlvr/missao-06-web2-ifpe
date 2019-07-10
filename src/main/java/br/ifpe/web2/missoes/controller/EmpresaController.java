@@ -61,7 +61,7 @@ public class EmpresaController {
 		if (this.empresaService.existe(empresa)) {
 			br.addError(new ObjectError("empresaNomeExistente", "Já existe empresa com o nome informado"));
 		}
-		if (this.empresaService.existePrincipal()) {
+		if (empresa.getPrincipal() && this.empresaService.existePrincipal()) {
 			br.addError(new ObjectError("empresaPrincipalExistente", "Já existe empresa principal"));
 		}
 		if (br.hasErrors()) {
