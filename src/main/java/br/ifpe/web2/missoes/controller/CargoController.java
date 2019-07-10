@@ -19,22 +19,19 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.ifpe.web2.missoes.model.Cargo;
-import br.ifpe.web2.missoes.model.Funcionario;
 import br.ifpe.web2.missoes.service.CargoService;
-import br.ifpe.web2.missoes.service.FuncionarioService;
 
 @Controller
 @RequestMapping("/cargos")
 public class CargoController {
 
 	@Autowired private CargoService cargoService;
-	@Autowired private FuncionarioService funcService;
 	
 	@GetMapping("/")
 	public ModelAndView viewListarCargos(@RequestParam(required = false) String q) {
 		ModelAndView mv = new ModelAndView("/cargo-listar");
 		if (q != null && !q.isEmpty()) {
-			List<Cargo> cargos = this.cargoService.findAllByDescricao(q);
+			List<Cargo> cargos = this.cargoService.listarTodosPorDescricao(q);
 			if (cargos.size() == 1) {
 				mv.setViewName("redirect:/cargos/"+cargos.get(0).getId());
 			} else {
@@ -43,7 +40,7 @@ public class CargoController {
 			return mv;
 		}
 		
-		mv.addObject("cargos", this.cargoService.findFirst10ByOrderByDescricaoAsc());
+		mv.addObject("cargos", this.cargoService.listarPrimeiros10OrdenadosPorDescricao());
 		return mv;
 	}
 	
@@ -68,19 +65,19 @@ public class CargoController {
 			return mv;
 		}
 		
-		this.cargoService.save(cargo);
+		this.cargoService.salvar(cargo);
 		mv.addObject("msgSucesso", "Cargo salvo com sucesso!");
 		mv.addObject("cargo", new Cargo());
 		
 		return mv;
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("/editar/{id}")
 	public ModelAndView viewAtualizarCargo(Model model, @PathVariable Integer id) {
 		ModelAndView mv = new ModelAndView("/cargo-inserir");
 		model.addAttribute("titulo", "Atualizar Cargo");
 		
-		Optional<Cargo> cargo = this.cargoService.findById(id);
+		Optional<Cargo> cargo = this.cargoService.obterPorId(id);
 		if (cargo.isPresent()) {
 			mv.addObject("cargo", cargo);
 		} else {
@@ -90,14 +87,14 @@ public class CargoController {
 		return mv;
 	}
 	
-	@PostMapping("/{id}")
-	public ModelAndView atualizarCargo(@Valid Cargo cargo, BindingResult br, Integer id, Model model) {
+	@PostMapping("/editar/{id}")
+	public ModelAndView atualizarCargo(@Valid Cargo cargo, BindingResult br, @PathVariable Integer id, Model model) {
 		ModelAndView mv = new ModelAndView("/cargo-inserir");
 		model.addAttribute("titulo", "Atualizar Cargo");
 		
 		try {
 			// só passa se as informações recebidas forem diferentes das anteriores (que estão no banco)
-			Optional<Cargo> cargoExistente = this.cargoService.findById(cargo.getId());
+			Optional<Cargo> cargoExistente = this.cargoService.obterPorId(cargo.getId());
 			if (cargoExistente.isPresent() && !cargoExistente.get().equals(cargo)) {
 				if (!cargo.getDescricao().equalsIgnoreCase(cargoExistente.get().getDescricao())) {
 					if (this.cargoService.existe(cargo)) {
@@ -108,7 +105,7 @@ public class CargoController {
 					return mv;
 				}
 				
-				this.cargoService.save(cargo);
+				this.cargoService.salvar(cargo);
 				mv.addObject("msgSucesso", "Cargo atualizado com sucesso!");
 			}
 		} catch (Exception e) {
@@ -120,18 +117,13 @@ public class CargoController {
 	}
 	
 	@GetMapping("/excluir/{id}")
-	public ModelAndView excluirCargo(@PathVariable Integer id, RedirectAttributes ra) {
-		Optional<Cargo> cargo = this.cargoService.findById(id);
-		if (cargo.isPresent()) {
-			List<Funcionario> funcs = this.funcService.findAllByCargo(cargo.get());
-			if (funcs.size() > 0) {
-				ra.addFlashAttribute("msgErro", "Não é possível excluir o(s) cargo(s) de funcionário"
-						+ " selecionado(s) devido a vínculos com outras informações.");
-			} else {
-				this.cargoService.deleteById(id);
-			}
+	public String excluirCargo(@PathVariable Integer id, RedirectAttributes ra) {
+		try {
+			this.cargoService.deletarPorId(id);
+		} catch (Exception e) {
+			ra.addFlashAttribute("msgErro", e.getMessage());
 		}
-		return new ModelAndView("redirect:/cargos/");
+		return "redirect:/cargos/";
 	}
 	
 }

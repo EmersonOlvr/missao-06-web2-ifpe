@@ -19,22 +19,19 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.ifpe.web2.missoes.model.Empresa;
-import br.ifpe.web2.missoes.model.Funcionario;
 import br.ifpe.web2.missoes.service.EmpresaService;
-import br.ifpe.web2.missoes.service.FuncionarioService;
 
 @Controller
 @RequestMapping("/empresas")
 public class EmpresaController {
 
 	@Autowired private EmpresaService empresaService;
-	@Autowired private FuncionarioService funcService;
 	
 	@GetMapping("/")
 	public ModelAndView viewListarEmpresas(@RequestParam(required = false) String q) {
 		ModelAndView mv = new ModelAndView("/empresa-listar");
 		if (q != null && !q.isEmpty()) {
-			List<Empresa> empresas = this.empresaService.findAllByNome(q);
+			List<Empresa> empresas = this.empresaService.listarTodasPorNome(q);
 			if (empresas.size() == 1) {
 				mv.setViewName("redirect:/empresas/"+empresas.get(0).getId());
 			} else {
@@ -43,7 +40,7 @@ public class EmpresaController {
 			return mv;
 		}
 		
-		mv.addObject("empresas", this.empresaService.findFirst10ByOrderByNomeAsc());
+		mv.addObject("empresas", this.empresaService.listarPrimeiras10OrdenadasPorNome());
 		return mv;
 	}
 	
@@ -62,25 +59,28 @@ public class EmpresaController {
 		model.addAttribute("titulo", "Inserir Empresa");
 		
 		if (this.empresaService.existe(empresa)) {
-			br.addError(new ObjectError("empresaExistente", "Já existe empresa com o nome informado"));
+			br.addError(new ObjectError("empresaNomeExistente", "Já existe empresa com o nome informado"));
+		}
+		if (this.empresaService.existePrincipal()) {
+			br.addError(new ObjectError("empresaPrincipalExistente", "Já existe empresa principal"));
 		}
 		if (br.hasErrors()) {
 			return mv;
 		}
 		
-		this.empresaService.save(empresa);
+		this.empresaService.salvar(empresa);
 		mv.addObject("msgSucesso", "Empresa salva com sucesso!");
 		mv.addObject("empresa", new Empresa());
 		
 		return mv;
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("/editar/{id}")
 	public ModelAndView viewAtualizarEmpresa(Model model, @PathVariable Integer id) {
 		ModelAndView mv = new ModelAndView("/empresa-inserir");
 		model.addAttribute("titulo", "Atualizar Empresa");
 		
-		Optional<Empresa> empresa = this.empresaService.findById(id);
+		Optional<Empresa> empresa = this.empresaService.obterPorId(id);
 		if (empresa.isPresent()) {
 			mv.addObject("empresa", empresa);
 		} else {
@@ -90,14 +90,14 @@ public class EmpresaController {
 		return mv;
 	}
 	
-	@PostMapping("/{id}")
-	public ModelAndView atualizarEmpresa(@Valid Empresa empresa, BindingResult br, Integer id, Model model) {
+	@PostMapping("/editar/{id}")
+	public ModelAndView atualizarEmpresa(@Valid Empresa empresa, BindingResult br, @PathVariable Integer id, Model model) {
 		ModelAndView mv = new ModelAndView("/empresa-inserir");
 		model.addAttribute("titulo", "Atualizar Empresa");
 		
 		try {
 			// só passa se as informações recebidas forem diferentes das anteriores (que estão no banco)
-			Optional<Empresa> empresaExistente = this.empresaService.findById(empresa.getId());
+			Optional<Empresa> empresaExistente = this.empresaService.obterPorId(empresa.getId());
 			if (empresaExistente.isPresent() && !empresaExistente.get().equals(empresa)) {
 				if (!empresa.getNome().equalsIgnoreCase(empresaExistente.get().getNome())) {
 					if (this.empresaService.existe(empresa)) {
@@ -108,7 +108,7 @@ public class EmpresaController {
 					return mv;
 				}
 				
-				this.empresaService.save(empresa);
+				this.empresaService.salvar(empresa);
 				mv.addObject("msgSucesso", "Empresa atualizado com sucesso!");
 			}
 		} catch (Exception e) {
@@ -121,15 +121,10 @@ public class EmpresaController {
 	
 	@GetMapping("/excluir/{id}")
 	public String excluirEmpresa(@PathVariable Integer id, RedirectAttributes ra) {
-		Optional<Empresa> empresa = this.empresaService.findById(id);
-		if (empresa.isPresent()) {
-			List<Funcionario> funcs = this.funcService.findAllByEmpresa(empresa.get());
-			if (funcs.size() > 0) {
-				ra.addFlashAttribute("msgErro", "Não é possível excluir a(s) empresa(s) "
-						+ "selecionada(s) devido a vínculos com outras informações.");
-			} else {
-				this.empresaService.deleteById(id);
-			}
+		try {
+			this.empresaService.deletarPorId(id);
+		} catch (Exception e) {
+			ra.addFlashAttribute("msgErro", e.getMessage());
 		}
 		return "redirect:/empresas/";
 	}

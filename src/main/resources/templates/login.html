@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Login</title>
+	
+	<th:block th:insert="/includes/include.html :: bootstrap-css"></th:block>
+</head>
+<body>
+	<div style="width: 500px">
+		<div th:if="${!#strings.isEmpty(msgErro)}" class="alert alert-danger mb-2">
+			[[${msgErro}]]
+		</div>
+		
+		<form action="/login" method="post">
+			<div>Matrícula: <input type="text" name="matricula" class="form-control"></div>
+			<div>Senha: <input type="password" name="senha" class="form-control"></div>
+			<br>
+			<div><input class="btn btn-primary" type="submit" value="Entrar"></div>
+		</form>
+	</div>
+</body>
+</html>

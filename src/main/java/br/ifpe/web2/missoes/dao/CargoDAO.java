@@ -5,9 +5,11 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import br.ifpe.web2.missoes.model.Cargo;
 
+@Repository
 public interface CargoDAO extends JpaRepository<Cargo, Integer> {
 
 	public List<Cargo> findFirst10ByOrderByDescricaoAsc();

@@ -89,4 +89,11 @@ public class Empresa {
 		this.ativa = ativa;
 	}
 	
+	
+	@Override
+	public String toString() {
+		return "Empresa [id=" + id + ", nome=" + nome + ", nomeAbreviado=" + nomeAbreviado + ", email=" + email
+				+ ", principal=" + principal + ", ativa=" + ativa + "]";
+	}
+	
 }

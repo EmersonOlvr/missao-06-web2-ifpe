@@ -5,9 +5,11 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import br.ifpe.web2.missoes.model.Empresa;
 
+@Repository
 public interface EmpresaDAO extends JpaRepository<Empresa, Integer> {
 
 	public List<Empresa> findFirst10ByOrderByNomeAsc();
@@ -21,5 +23,7 @@ public interface EmpresaDAO extends JpaRepository<Empresa, Integer> {
 	
 	@Query("SELECT e FROM Empresa e WHERE e.ativa = :ativa")
 	public List<Empresa> findAllByAtiva(boolean ativa);
+
+	public boolean existsByPrincipal(boolean principal);
 	
 }

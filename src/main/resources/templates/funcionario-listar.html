@@ -7,58 +7,54 @@
 	<th:block th:insert="/includes/include.html :: bootstrap-css"></th:block>
 	
 	<script type="text/javascript">
-		var idCargo = 0;
-		function setIdCargo(novoIdCargo) {
-			idCargo = novoIdCargo;
+		var idFuncionario = 0;
+		function setIdFuncionario(novoIdFuncionario) {
+			idFuncionario = novoIdFuncionario;
 		}
 		function redirecionar() {
-			window.location.href="/cargos/excluir/"+idCargo;
+			window.location.href="/funcionarios/excluir/"+idFuncionario;
 		}
 	</script>
 	
-	<title>Cargos</title>
+	<title>Funcionários</title>
 </head>
 <body>
-	<form>
-		<div class="input-group mb-3">
-			<input type="search" class="form-control" name="q" placeholder="Filtrar cargos por descrição..." 
-				aria-label="Filtrar cargos por descrição...">
-			<div class="input-group-append">
-				<input type="submit" class="btn btn-outline-primary" value="Filtrar">
-			</div>
-		</div>
-	</form>
-	
 	<div class="alert alert-danger" th:if="${!#strings.isEmpty(msgErro)}">
 		[[${msgErro}]]
 	</div>
 	
 	<table class="table table-bordered table-hover">
 		<thead>
-			<th>Descrição</th>
-			<th>Descrição abreviada</th>
-			<th>Situação</th>
+			<th>Matrícula</th>
+			<th>Nome</th>
+			<th>Cargo</th>
+			<th>Departamento</th>
+			<th>Cidade</th>
+			<th>Empresa</th>
 			<th colspan="2">Ações</th>
 		</thead>
 		<tbody>
-			<tr th:if="${!#lists.isEmpty(cargos)}" th:each="cargo : ${cargos}">
-				<td>[[${cargo.descricao}]]</td>
-				<td>[[${cargo.descricaoAbreviada}]]</td>
-				<td th:if="${cargo.ativo}">Ativo</td>
-				<td th:unless="${cargo.ativo}">Inativo</td>
-				
-				<td><a th:href="|/cargos/editar/${cargo.id}|" class="btn btn-sm btn-outline-primary">Editar</a></td>
-				<td><button th:href="|/cargos/excluir/${cargo.id}|" class="btn btn-sm btn-outline-danger"
+			<tr th:if="${!#lists.isEmpty(funcionarios)}" th:each="funcionario : ${funcionarios}">
+				<td>[[${funcionario.matricula}]]</td>
+				<td>[[${funcionario.nome}]]</td>
+				<td>[[${funcionario.cargo.descricao}]]</td>
+				<td>[[${funcionario.departamento}]]</td>
+				<td>[[${funcionario.endereco.cidade}]]</td>
+				<td>[[${funcionario.empresa.nome}]]</td>
+				<td><a th:href="|/funcionarios/editar/${funcionario.id}|" class="btn btn-sm btn-outline-primary">Editar</a></td>
+				<td><button th:href="|/funcionarios/excluir/${funcionario.id}|" class="btn btn-sm btn-outline-danger"
 					data-toggle="modal" data-target="#confirmacaoExclusao" 
-					th:onclick="'javascript:setIdCargo(\'' +${cargo.id}+ '\');'">Exluir</button></td>
+					th:onclick="'javascript:setIdFuncionario(\'' +${funcionario.id}+ '\');'">Exluir</button></td>
 			</tr>
-			<tr th:if="${#lists.isEmpty(cargos)}">
-				<td colspan="5" style="font-style: italic;">Nenhum cargo encontrado.</td>
+			<tr th:if="${#lists.isEmpty(funcionarios)}">
+				<td colspan="7" style="font-style: italic;">Nenhum funcionário encontrado.</td>
 			</tr>
 		</tbody>
 	</table>
 
-	<a class="btn btn-success" href="/cargos/inserir">Inserir Cargo</a>
+	<a class="btn btn-primary" href="/funcionarios/filtrar">Filtrar Funcionários</a>
+	<br><br>
+	<a class="btn btn-success" href="/funcionarios/inserir">Inserir Funcionário</a>
 	<br><br>
 	<a href="/"><span style="font-size: 14pt">«</span> Voltar</a>
 	

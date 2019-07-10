@@ -4,7 +4,7 @@ import java.util.InputMismatchException;
 
 import br.ifpe.web2.missoes.util.exceptions.CPFException;
 
-public class ValidaCPF {
+public class Util {
 
 	public static void validarCPF(String CPF) throws CPFException {
 		// considera-se erro CPF's formados por uma sequencia de numeros iguais

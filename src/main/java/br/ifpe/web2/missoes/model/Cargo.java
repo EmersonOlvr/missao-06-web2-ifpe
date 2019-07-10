@@ -19,7 +19,7 @@ public class Cargo {
 	
 	@Column(nullable = false, length = 70, unique = true)
 	@NotBlank(message = "Informe a descrição")
-	@Size(max = 70, message = "A descrição deve ter no máximo {max} 70 caracteres")
+	@Size(max = 70, message = "A descrição deve ter no máximo {max} caracteres")
 	private String descricao;
 	
 	@Column(length = 15)
@@ -92,6 +92,13 @@ public class Cargo {
 		} else if (!descricaoAbreviada.equals(other.descricaoAbreviada))
 			return false;
 		return true;
+	}
+	
+	
+	@Override
+	public String toString() {
+		return "Cargo [id=" + id + ", descricao=" + descricao + ", descricaoAbreviada=" + descricaoAbreviada
+				+ ", ativo=" + ativo + "]";
 	}
 	
 }

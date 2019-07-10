@@ -14,33 +14,47 @@ public class EmpresaService {
 
 	@Autowired private EmpresaDAO empresas;
 	
-	public Empresa save(Empresa empresa) {
+	@Autowired private FuncionarioService funcService;
+	
+	public Empresa salvar(Empresa empresa) {
 		return this.empresas.save(empresa);
 	}
-	public Optional<Empresa> findById(Integer id) {
+	
+	public Optional<Empresa> obterPorId(Integer id) {
 		return this.empresas.findById(id);
 	}
-	public List<Empresa> findAll() {
-		return this.empresas.findAll();
-	}
-	public List<Empresa> findFirst10ByOrderByNomeAsc() {
-		return this.empresas.findFirst10ByOrderByNomeAsc();
-	}
-	public List<Empresa> findAllByNome(String nome) {
-		return this.empresas.findAllByNome(nome);
-	}
-	public Optional<Empresa> findByNomeEquals(String nome) {
+	public Optional<Empresa> obterPorNome(String nome) {
 		return this.empresas.findByNomeEquals(nome);
 	}
-	public void deleteById(Integer id) {
-		this.empresas.deleteById(id);
-	}
 	
+	public List<Empresa> listarTodas() {
+		return this.empresas.findAll();
+	}
+	public List<Empresa> listarTodasAtivas() {
+		return this.empresas.findAllByAtiva(true);
+	}
+	public List<Empresa> listarPrimeiras10OrdenadasPorNome() {
+		return this.empresas.findFirst10ByOrderByNomeAsc();
+	}
+	public List<Empresa> listarTodasPorNome(String nome) {
+		return this.empresas.findAllByNome(nome);
+	}
+
 	public boolean existe(Empresa empresa) {
 		return this.empresas.existsByNome(empresa.getNome());
 	}
-	public List<Empresa> findAllByAtiva(boolean ativa) {
-		return this.empresas.findAllByAtiva(ativa);
+	public boolean existePrincipal() {
+		return this.empresas.existsByPrincipal(true);
 	}
+	
+	public void deletarPorId(Integer id) throws Exception {
+		Empresa emp = this.empresas.findById(id).orElseThrow(() -> new Exception("Empresa inexistente."));
+		if (this.funcService.existeComEmpresa(emp)) {
+			throw new Exception("Não é possível excluir a(s) empresa(s) selecionada(s) devido a vínculos com outras informações.");
+		}
+		
+		this.empresas.deleteById(id);
+	}
+	
 	
 }

@@ -18,78 +18,175 @@
 		}
 	</script>
 	
-	<title>Inserir Funcionário</title>
+	<title>[[${titulo}]]</title>
 </head>
 <body>
-	<div class="form" style="width: 500px">
-		<div th:if="${cargos.size() == 0 || empresas.size() == 0}" class="alert alert-danger">
-			<div th:if="${cargos.size() == 0}">Entidade Cargo sem dados para seleção.</div>
-			<div th:if="${empresas.size() == 0}">Entidade Empresa sem dados para seleção.</div>
-			<div><br><a href="/"><span style="font-size: 14pt">«</span> Voltar</a></div>
-		</div>
-		
-		<form th:if="${cargos.size() > 0 && empresas.size() > 0}" th:object="${funcionario}" 
-			th:action="@{/funcionarios/inserir}" method="post">
-			<div class="alert alert-danger" th:if="${#fields.hasErrors()}">
-				<div th:each="msgErro : ${#fields.allErrors()}">
-					[[${msgErro}]]<br>
-				</div>
-			</div>
-			<div class="alert alert-success" th:if="${!#strings.isEmpty(msgSucesso)}">
-				[[${msgSucesso}]]
+	<main role="main" class="container">
+		<div class="form">
+			<div th:if="${cargos.size() == 0 || empresas.size() == 0}" class="alert alert-danger">
+				<div th:if="${cargos.size() == 0}">Entidade Cargo sem dados para seleção.</div>
+				<div th:if="${empresas.size() == 0}">Entidade Empresa sem dados para seleção.</div>
+				<div><br><a href="/funcionarios/"><span style="font-size: 14pt">«</span> Voltar</a></div>
 			</div>
 			
-			<div class="form-group row">
-				<label for="matricula" class="col-sm-5 col-form-label">Matrícula</label>
-				<div class="col-sm-7">
-					<input class="form-control" type="number" th:field="*{matricula}">
+			<form th:if="${cargos.size() > 0 && empresas.size() > 0}" th:object="${funcionario}" 
+					enctype="multipart/form-data" method="post">
+				<div class="alert alert-danger" th:if="${#fields.hasErrors()}">
+					<div th:each="msgErro : ${#fields.allErrors()}">
+						[[${msgErro}]]<br>
+					</div>
 				</div>
-			</div>
-			<div class="form-group row">
-				<label for="nome" class="col-sm-5 col-form-label">Nome</label>
-				<div class="col-sm-7">
-					<input class="form-control" type="text" th:field="*{nome}">
+				<div class="alert alert-success" th:if="${!#strings.isEmpty(msgSucesso)}">
+					[[${msgSucesso}]]
 				</div>
-			</div>
-			<div class="form-group row">
-				<label for="cpf" class="col-sm-5 col-form-label">CPF</label>
-				<div class="col-sm-7">
-					<input class="form-control" type="text" th:field="*{cpf}" onkeypress="formatar('###.###.###-##', this)" maxlength="14">
+				
+				<div class="form-group row">
+					<label for="matricula" class="col-sm-2 col-form-label">Matrícula <span class="ast">*</span></label>
+					<div class="col-sm-10">
+						<input class="form-control" type="text" th:field="*{matricula}">
+					</div>
 				</div>
-			</div>
-			<div class="form-group row">
-				<label for="dataNascimento" class="col-sm-5 col-form-label">Data de Nascimento</label>
-				<div class="col-sm-7">
-					<input class="form-control" type="date" th:field="*{dataNascimento}">
+				<div class="form-group row">
+					<label for="fotoTemporaria" class="col-sm-2 col-form-label">Foto <span class="ast">*</span></label>
+					<div class="col-sm-10 row">
+						<div class="col-2" th:if="${mostrarInputsOmitidos}">
+							<img alt="Foto atual" title="Foto atual" th:src="|/download/${funcionario.foto.id}|" width="130">
+						</div>
+						<div class="col-10">
+							<input class="form-control-file" type="file" name="file">
+						</div>
+					</div>
 				</div>
-			</div>
-			<div class="form-group row">
-				<label for="cargo" class="col-sm-5 col-form-label">Cargo</label>
-				<div class="col-sm-7">
-					<select class="form-control" th:field="*{cargo}">
-						<option value="">Selecione...</option>
-						<option th:if="${!#lists.isEmpty(cargos)}"
-							th:each="cargo : ${cargos}" th:value="${cargo.id}">[[${cargo.descricao}]]</option>
-					</select>
+				<div class="form-group row">
+					<label for="nome" class="col-sm-2 col-form-label">Nome <span class="ast">*</span></label>
+					<div class="col-sm-10">
+						<input class="form-control" type="text" th:field="*{nome}">
+					</div>
 				</div>
-			</div>
-			<div class="form-group row">
-				<label for="empresa" class="col-sm-5 col-form-label">Empresa</label>
-				<div class="col-sm-7">
-					<select class="form-control" th:field="*{empresa}">
-						<option value="">Selecione...</option>
-						<option th:if="${!#lists.isEmpty(empresas)}" 
-							th:each="empresa : ${empresas}" th:value="${empresa.id}">[[${empresa.nome}]]</option>
-					</select>
+				<div class="form-group row">
+					<label for="cpf" class="col-sm-2 col-form-label">CPF <span class="ast">*</span></label>
+					<div class="col-sm-10">
+						<input class="form-control" type="text" th:field="*{cpf}" onkeypress="formatar('###.###.###-##', this)" maxlength="14">
+					</div>
 				</div>
-			</div>
-			<div class="form-group row">
-				<div class="col-sm-7">
-					<input class="btn btn-primary" type="submit" value="Salvar">
+				<div class="form-group row">
+					<label for="dataNascimento" class="col-sm-2 col-form-label">Data de Nascimento <span class="ast">*</span></label>
+					<div class="col-sm-10">
+						<input class="form-control" type="date" th:field="*{dataNascimento}">
+					</div>
 				</div>
-			</div>
-		</form>
-	</div>
+				<div class="form-group row">
+					<label for="cargo" class="col-sm-2 col-form-label">Cargo <span class="ast">*</span></label>
+					<div class="col-sm-10">
+						<select class="form-control" th:field="*{cargo}">
+							<option value="">Selecione...</option>
+							<option th:if="${!#lists.isEmpty(cargos)}"
+								th:each="cargo : ${cargos}" th:value="${cargo.id}">[[${cargo.descricao}]]</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="empresa" class="col-sm-2 col-form-label">Empresa <span class="ast">*</span></label>
+					<div class="col-sm-10">
+						<select class="form-control" th:field="*{empresa}">
+							<option value="">Selecione...</option>
+							<option th:if="${!#lists.isEmpty(empresas)}" 
+								th:each="empresa : ${empresas}" th:value="${empresa.id}">[[${empresa.nome}]]</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="dataAdmissao" class="col-sm-2 col-form-label">Salário <span class="ast">*</span></label>
+					<div class="col-sm-10">
+						<input class="form-control" type="number" min="0.00" step="0.01" th:field="*{salario}">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="dataAdmissao" class="col-sm-2 col-form-label">Data de Admissão <span class="ast">*</span></label>
+					<div class="col-sm-10">
+						<input class="form-control" type="date" th:field="*{dataAdmissao}">
+					</div>
+				</div>
+				<div th:if="${mostrarInputsOmitidos}" class="form-group row">
+					<label for="dataDemissao" class="col-sm-2 col-form-label">Data de Demissão</label>
+					<div class="col-sm-10">
+						<input class="form-control" type="date" th:field="*{dataDemissao}">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-md-2 col-form-label align-self-center">Endereço <span class="ast">*</span></label>
+					<div class="col-md-10 mb-2">
+						<div class="row">
+							<div class="col-md-4 mt-2">
+								<label for="estado" class="lbl-end font-italic mb-0">Estado <span class="ast">*</span></label>
+								<select class="form-control" th:field="*{endereco.estado}">
+									<option value="">Selecione o Estado...</option>
+									<option th:each="estado : ${T(br.ifpe.web2.missoes.enums.EstadosEnum).values()}" th:value="${estado}" th:text="${estado.nome}">Estado</option>
+								</select>
+							</div>
+							<input th:if="${mostrarInputsOmitidos}" type="hidden" th:field="*{endereco.id}">
+							<input th:if="${mostrarInputsOmitidos}" type="hidden" th:field="*{endereco.funcionario}">
+							<div class="col-md-4 mt-2">
+								<label for="endereco.cidade" class="lbl-end font-italic mb-0">Cidade <span class="ast">*</span></label>
+								<input class="form-control" type="text" th:field="*{endereco.cidade}">
+							</div>
+							<div class="col-md-4 mt-2">
+								<label for="endereco.bairro" class="lbl-end font-italic mb-0">Bairro <span class="ast">*</span></label>
+								<input class="form-control" type="text" th:field="*{endereco.bairro}">
+							</div>
+							<div class="col-md-6 mt-2">
+								<label for="endereco.numero" class="lbl-end font-italic mb-0">Número <span class="ast">*</span></label>
+								<input class="form-control" type="number" th:field="*{endereco.numero}">
+							</div>
+							<div class="col-md-6 mt-2">
+								<label for="endereco.complemento" class="lbl-end font-italic mb-0">Complemento</label>
+								<input class="form-control" type="text" th:field="*{endereco.complemento}">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="departamento" class="col-sm-2 col-form-label">Departamento <span class="ast">*</span></label>
+					<div class="col-sm-10">
+						<input class="form-control" type="text" th:field="*{departamento}">
+					</div>
+				</div>
+				<div th:if="${mostrarInputsOmitidos}" class="form-group row">
+					<label class="col-md-2 col-form-label align-self-center">Período de Férias</label>
+					<div class="col-md-10 mb-2">
+						<div class="row">
+							<input th:if="${mostrarInputsOmitidos}" type="hidden" th:field="*{periodoFerias.id}">
+							<input th:if="${mostrarInputsOmitidos}" type="hidden" th:field="*{periodoFerias.funcionario}">
+							<div class="col-md-6 mt-2">
+								<label for="periodoFerias.dataInicio" class="lbl-end font-italic mb-0">Data do Início <span class="ast">*</span></label>
+								<input class="form-control" type="date" th:field="*{periodoFerias.dataInicio}">
+							</div>
+							<div class="col-md-6 mt-2">
+								<label for="periodoFerias.dataFim" class="lbl-end font-italic mb-0">Data do Fim <span class="ast">*</span></label>
+								<input class="form-control" type="date" th:field="*{periodoFerias.dataFim}">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="senha" class="col-sm-2 col-form-label">
+						<th:block th:unless="${mostrarInputsOmitidos}">Senha <span class="ast">*</span></th:block>
+						<th:block th:if="${mostrarInputsOmitidos}">Nova Senha</th:block>
+					</label>
+					<div class="col-sm-10">
+						<input class="form-control" type="password" th:field="*{senha}">
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col-sm-10">
+						<input class="btn btn-primary" type="submit" value="Salvar">
+					</div>
+				</div>
+				
+				<br><a href="/funcionarios/"><span style="font-size: 14pt">«</span> Voltar</a>
+			</form>
+		</div>
+	</main>
 	
 	<th:block th:insert="/includes/include.html :: bootstrap-js"></th:block>
 </body>
