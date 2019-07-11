@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import br.ifpe.web2.missoes.model.Cargo;
+import br.ifpe.web2.missoes.model.Departamento;
 import br.ifpe.web2.missoes.model.Empresa;
 import br.ifpe.web2.missoes.model.Funcionario;
 
@@ -26,6 +27,7 @@ public interface FuncionarioDAO extends JpaRepository<Funcionario, Integer> {
 	public boolean existsByMatricula(String matricula);
 	public boolean existsByEmpresa(Empresa empresa);
 	public boolean existsByCargo(Cargo cargo);
+	public boolean existsByDepartamento(Departamento departamento);
 	
 	public Optional<Funcionario> findByCpf(String cpf);
 	public Optional<Funcionario> findByMatricula(String matricula);

@@ -20,6 +20,7 @@ import br.ifpe.web2.missoes.dao.FuncionarioDAO;
 import br.ifpe.web2.missoes.dao.PeriodoFeriasDAO;
 import br.ifpe.web2.missoes.exceptions.FuncionarioNotFoundException;
 import br.ifpe.web2.missoes.model.Cargo;
+import br.ifpe.web2.missoes.model.Departamento;
 import br.ifpe.web2.missoes.model.Empresa;
 import br.ifpe.web2.missoes.model.Endereco;
 import br.ifpe.web2.missoes.model.Foto;
@@ -98,6 +99,9 @@ public class FuncionarioService {
 	}
 	public boolean existeComCargo(Cargo cargo) {
 		return this.funcs.existsByCargo(cargo);
+	}
+	public boolean existeComDepartamento(Departamento departamento) {
+		return this.funcs.existsByDepartamento(departamento);
 	}
 	
 	@Transactional
@@ -182,25 +186,36 @@ public class FuncionarioService {
 		}
 		
 		// ====== Validação do Período de Férias ====== //
-		if (jaCadastrado && funcionario.getPeriodoFerias() != null) {
-			PeriodoFerias pf = funcionario.getPeriodoFerias();
-			if (pf.getDataInicio() != null && pf.getDataFim() == null) {
-				erros.add("Informe a Data do Fim do Período de Ferias");
-			} else if (pf.getDataFim() != null && pf.getDataInicio() == null) {
+		PeriodoFerias pf = funcionario.getPeriodoFerias();
+		if (jaCadastrado && pf != null && (pf.getDataInicio() != null || pf.getDataFim() != null)) {
+			if (pf.getDataInicio() == null) {
 				erros.add("Informe a Data de Início do Período de Ferias");
+			} else if (pf.getDataFim() == null) {
+				erros.add("Informe a Data do Fim do Período de Ferias");
 			} else if (pf.getDataFim().isBefore(pf.getDataInicio()) || pf.getDataFim().isEqual(pf.getDataInicio())) {
 				erros.add("A Data do Fim não pode ser igual ou anterior à Data de Início do Período de Férias");
 			}
 		}
+		// ====== Validação do Período de Férias ====== //
+		if (funcionario.getDepartamento() == null) {
+			erros.add("Informe o Departamento");
+		}
 		
 		// ====== Validação da Senha ====== //
-		if (jaCadastrado && funcionario.getSenha().isEmpty() ) {
-			funcionario.setSenha(this.funcs.findById(funcionario.getId()).get().getSenha());
+		String salt = BCrypt.gensalt(12);
+		if (jaCadastrado) {
+			if (funcionario.getSenha().isEmpty()) {
+				funcionario.setSenha(func.get().getSenha());
+			} else {
+				funcionario.setSenha(BCrypt.hashpw(funcionario.getSenha(), salt));
+			}
+		} else {
+			if (Strings.isBlank(funcionario.getSenha())) {
+				erros.add("Informe a Senha");
+			} else {
+				funcionario.setSenha(BCrypt.hashpw(funcionario.getSenha(), salt));
+			}
 		}
-		if (!jaCadastrado && Strings.isBlank(funcionario.getSenha())) {
-			erros.add("Informe a Senha");
-		}
-		funcionario.setSenha(BCrypt.hashpw(funcionario.getSenha(), BCrypt.gensalt(12)));
 		
 		return erros;
 	}

@@ -33,7 +33,7 @@ public class CargoController {
 		if (q != null && !q.isEmpty()) {
 			List<Cargo> cargos = this.cargoService.listarTodosPorDescricao(q);
 			if (cargos.size() == 1) {
-				mv.setViewName("redirect:/cargos/"+cargos.get(0).getId());
+				mv.setViewName("redirect:/cargos/editar/"+cargos.get(0).getId());
 			} else {
 				mv.addObject("cargos", cargos);
 			}
@@ -109,7 +109,7 @@ public class CargoController {
 				mv.addObject("msgSucesso", "Cargo atualizado com sucesso!");
 			}
 		} catch (Exception e) {
-			mv.setViewName("redirect:/cargos/"+id);
+			mv.setViewName("redirect:/cargos/editar/"+id);
 			return mv;
 		}
 		

@@ -28,7 +28,7 @@
 			
 			<input type="hidden" th:field="*{id}">
 			<div class="form-group row">
-				<label for="nome" class="col-sm-5 col-form-label">Nome</label>
+				<label for="nome" class="col-sm-5 col-form-label">Nome <span class="ast">*</span></label>
 				<div class="col-sm-7">
 					<input class="form-control" type="text" th:field="*{nome}">
 				</div>
@@ -46,14 +46,14 @@
 				</div>
 			</div>
 			<div class="form-group row">
-				<label class="col-sm-5 col-form-label">Principal</label>
+				<label class="col-sm-5 col-form-label">Principal <span class="ast">*</span></label>
 				<div class="col-sm-7 mt-2">
 					<input type="radio" th:field="*{principal}" value="true"> <label class="labelPrincipalSim" for="principal1">Sim</label>
 					<input type="radio" th:field="*{principal}" value="false"> <label for="principal2">Não</label>
 				</div>
 			</div>
 			<div class="form-group row">
-				<label class="col-sm-5 col-form-label">Situação</label>
+				<label class="col-sm-5 col-form-label">Situação <span class="ast">*</span></label>
 				<div class="col-sm-7 mt-2">
 					<input type="radio" th:field="*{ativa}" value="true"> <label class="labelAtivaSim" for="ativa1">Ativa</label>
 					<input type="radio" th:field="*{ativa}" value="false"> <label for="ativa2">Inativa</label>

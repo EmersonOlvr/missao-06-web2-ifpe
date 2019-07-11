@@ -33,7 +33,7 @@ public class EmpresaController {
 		if (q != null && !q.isEmpty()) {
 			List<Empresa> empresas = this.empresaService.listarTodasPorNome(q);
 			if (empresas.size() == 1) {
-				mv.setViewName("redirect:/empresas/"+empresas.get(0).getId());
+				mv.setViewName("redirect:/empresas/editar/"+empresas.get(0).getId());
 			} else {
 				mv.addObject("empresas", empresas);
 			}
@@ -112,7 +112,7 @@ public class EmpresaController {
 				mv.addObject("msgSucesso", "Empresa atualizado com sucesso!");
 			}
 		} catch (Exception e) {
-			mv.setViewName("redirect:/empresas/"+id);
+			mv.setViewName("redirect:/empresas/editar/"+id);
 			return mv;
 		}
 		

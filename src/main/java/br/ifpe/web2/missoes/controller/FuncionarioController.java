@@ -26,6 +26,7 @@ import br.ifpe.web2.missoes.exceptions.FuncionarioNotFoundException;
 import br.ifpe.web2.missoes.model.Foto;
 import br.ifpe.web2.missoes.model.Funcionario;
 import br.ifpe.web2.missoes.service.CargoService;
+import br.ifpe.web2.missoes.service.DepartamentoService;
 import br.ifpe.web2.missoes.service.EmpresaService;
 import br.ifpe.web2.missoes.service.FotoStorageService;
 import br.ifpe.web2.missoes.service.FuncionarioService;
@@ -38,6 +39,7 @@ public class FuncionarioController {
 	@Autowired private EmpresaService empresaService;
 	@Autowired private CargoService cargoService;
 	@Autowired private FotoStorageService fotoService;
+	@Autowired private DepartamentoService depService;
 
 	@GetMapping("/")
 	public ModelAndView viewListarFuncionarios(@RequestParam(required = false) String q) {
@@ -51,6 +53,7 @@ public class FuncionarioController {
 		ModelAndView mv = new ModelAndView("/funcionario-filtrar");
 		mv.addObject("cargos", this.cargoService.listarTodosAtivos());
 		mv.addObject("empresas", this.empresaService.listarTodasAtivas());
+		mv.addObject("departamentos", this.depService.listarTodos());
 		mv.addObject("funcionario", new Funcionario());
 		return mv;
 	}
@@ -60,11 +63,12 @@ public class FuncionarioController {
 		ModelAndView mv = new ModelAndView("/funcionario-listar");
 		mv.addObject("cargos", this.cargoService.listarTodosAtivos());
 		mv.addObject("empresas", this.empresaService.listarTodasAtivas());
+		mv.addObject("departamentos", this.depService.listarTodos());
 		
 		if (Strings.isBlank(funcionario.getNome()) && Strings.isBlank(funcionario.getCpf()) 
 				&& funcionario.getCargo() == null && funcionario.getEmpresa() == null 
 				&& (funcionario.getEndereco() == null || Strings.isBlank(funcionario.getEndereco().getCidade())) 
-				&& Strings.isBlank(funcionario.getDepartamento())) 
+				&& (funcionario.getDepartamento() == null || Strings.isBlank(funcionario.getDepartamento().getNome()))) 
 		{
 			model.addAttribute("msgErro", "Informe no mínimo um campo para filtrar.");
 			mv.setViewName("/funcionario-filtrar");
@@ -77,7 +81,7 @@ public class FuncionarioController {
 		if (Strings.isBlank(funcionario.getNome())) {
 			funcionario.setNome(null);
 		}
-		if (Strings.isBlank(funcionario.getDepartamento())) {
+		if (funcionario.getDepartamento() == null || Strings.isBlank(funcionario.getDepartamento().getNome())) {
 			funcionario.setDepartamento(null);
 		}
 		if (Strings.isBlank(funcionario.getEndereco().getCidade())) {
@@ -95,6 +99,7 @@ public class FuncionarioController {
 		mv.addObject("funcionario", new Funcionario());
 		mv.addObject("cargos", this.cargoService.listarTodosAtivos());
 		mv.addObject("empresas", this.empresaService.listarTodasAtivas());
+		mv.addObject("departamentos", this.depService.listarTodos());
 		model.addAttribute("titulo", "Inserir Funcionário");
 		return mv;
 	}
@@ -106,6 +111,7 @@ public class FuncionarioController {
 		ModelAndView mv = new ModelAndView("/funcionario-inserir");
 		mv.addObject("cargos", this.cargoService.listarTodosAtivos());
 		mv.addObject("empresas", this.empresaService.listarTodasAtivas());
+		mv.addObject("departamentos", this.depService.listarTodos());
 		model.addAttribute("titulo", "Inserir Funcionário");
 		
 		ArrayList<String> erros = this.funcService.validar(funcionario);
@@ -139,6 +145,7 @@ public class FuncionarioController {
 		ModelAndView mv = new ModelAndView("/funcionario-inserir");
 		mv.addObject("cargos", this.cargoService.listarTodosAtivos());
 		mv.addObject("empresas", this.empresaService.listarTodasAtivas());
+		mv.addObject("departamentos", this.depService.listarTodos());
 		model.addAttribute("titulo", "Atualizar Funcionário");
 		model.addAttribute("mostrarInputsOmitidos", true);
 		
@@ -158,6 +165,7 @@ public class FuncionarioController {
 		ModelAndView mv = new ModelAndView("/funcionario-inserir");
 		mv.addObject("cargos", this.cargoService.listarTodosAtivos());
 		mv.addObject("empresas", this.empresaService.listarTodasAtivas());
+		mv.addObject("departamentos", this.depService.listarTodos());
 		model.addAttribute("titulo", "Atualizar Funcionário");
 		model.addAttribute("mostrarInputsOmitidos", true);
 		

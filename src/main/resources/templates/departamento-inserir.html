@@ -16,7 +16,7 @@
 </head>
 <body>
 	<div class="form" style="width: 500px">
-		<form th:object="${cargo}" method="post">
+		<form th:object="${departamento}" method="post">
 			<div class="alert alert-danger" th:if="${#fields.hasErrors()}">
 				<div th:each="msgErro : ${#fields.allErrors()}">
 					[[${msgErro}]]<br>
@@ -28,22 +28,9 @@
 			
 			<input type="hidden" th:field="*{id}">
 			<div class="form-group row">
-				<label for="descricao" class="col-sm-5 col-form-label">Descrição <span class="ast">*</span></label>
+				<label for="nome" class="col-sm-5 col-form-label">Nome <span class="ast">*</span></label>
 				<div class="col-sm-7">
-					<input class="form-control" type="text" th:field="*{descricao}">
-				</div>
-			</div>
-			<div class="form-group row">
-				<label for="descricaoAbreviada" class="col-sm-5 col-form-label">Descrição abreviada</label>
-				<div class="col-sm-7">
-					<input class="form-control" type="text" th:field="*{descricaoAbreviada}">
-				</div>
-			</div>
-			<div class="form-group row">
-				<label class="col-sm-5 col-form-label">Situação <span class="ast">*</span></label>
-				<div class="col-sm-7 mt-2">
-					<input type="radio" th:field="*{ativo}" value="true"> <label class="labelAtivoSim" for="ativo1">Ativo</label>
-					<input type="radio" th:field="*{ativo}" value="false"> <label for="ativo2">Inativo</label>
+					<input class="form-control" type="text" th:field="*{nome}">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -52,7 +39,7 @@
 				</div>
 			</div>
 			
-			<br><a href="/cargos/"><span style="font-size: 14pt">«</span> Voltar</a>
+			<br><a href="/departamentos/"><span style="font-size: 14pt">«</span> Voltar</a>
 		</form>
 	</div>
 

@@ -23,13 +23,14 @@
 <body>
 	<main role="main" class="container">
 		<div class="form">
-			<div th:if="${cargos.size() == 0 || empresas.size() == 0}" class="alert alert-danger">
+			<div th:if="${cargos.size() == 0 || empresas.size() == 0 || departamentos.size() == 0}" class="alert alert-danger">
 				<div th:if="${cargos.size() == 0}">Entidade Cargo sem dados para seleção.</div>
 				<div th:if="${empresas.size() == 0}">Entidade Empresa sem dados para seleção.</div>
+				<div th:if="${departamentos.size() == 0}">Entidade Departamento sem dados para seleção.</div>
 				<div><br><a href="/funcionarios/"><span style="font-size: 14pt">«</span> Voltar</a></div>
 			</div>
 			
-			<form th:if="${cargos.size() > 0 && empresas.size() > 0}" th:object="${funcionario}" 
+			<form th:if="${cargos.size() > 0 && empresas.size() > 0 && departamentos.size() > 0}" th:object="${funcionario}" 
 					enctype="multipart/form-data" method="post">
 				<div class="alert alert-danger" th:if="${#fields.hasErrors()}">
 					<div th:each="msgErro : ${#fields.allErrors()}">
@@ -47,13 +48,13 @@
 					</div>
 				</div>
 				<div class="form-group row">
-					<label for="fotoTemporaria" class="col-sm-2 col-form-label">Foto <span class="ast">*</span></label>
+					<label for="file" class="col-sm-2 col-form-label">Foto <span class="ast">*</span></label>
 					<div class="col-sm-10 row">
 						<div class="col-2" th:if="${mostrarInputsOmitidos}">
 							<img alt="Foto atual" title="Foto atual" th:src="|/download/${funcionario.foto.id}|" width="130">
 						</div>
 						<div class="col-10">
-							<input class="form-control-file" type="file" name="file">
+							<input class="form-control-file" type="file" id="file" name="file">
 						</div>
 					</div>
 				</div>
@@ -96,7 +97,7 @@
 					</div>
 				</div>
 				<div class="form-group row">
-					<label for="dataAdmissao" class="col-sm-2 col-form-label">Salário <span class="ast">*</span></label>
+					<label for="salario" class="col-sm-2 col-form-label">Salário <span class="ast">*</span></label>
 					<div class="col-sm-10">
 						<input class="form-control" type="number" min="0.00" step="0.01" th:field="*{salario}">
 					</div>
@@ -118,7 +119,7 @@
 					<div class="col-md-10 mb-2">
 						<div class="row">
 							<div class="col-md-4 mt-2">
-								<label for="estado" class="lbl-end font-italic mb-0">Estado <span class="ast">*</span></label>
+								<label for="endereco.estado" class="lbl-end font-italic mb-0">Estado <span class="ast">*</span></label>
 								<select class="form-control" th:field="*{endereco.estado}">
 									<option value="">Selecione o Estado...</option>
 									<option th:each="estado : ${T(br.ifpe.web2.missoes.enums.EstadosEnum).values()}" th:value="${estado}" th:text="${estado.nome}">Estado</option>
@@ -148,7 +149,11 @@
 				<div class="form-group row">
 					<label for="departamento" class="col-sm-2 col-form-label">Departamento <span class="ast">*</span></label>
 					<div class="col-sm-10">
-						<input class="form-control" type="text" th:field="*{departamento}">
+						<select class="form-control" th:field="*{departamento}">
+							<option value="">Selecione...</option>
+							<option th:if="${!#lists.isEmpty(departamentos)}" 
+								th:each="departamento : ${departamentos}" th:value="${departamento.id}">[[${departamento.nome}]]</option>
+						</select>
 					</div>
 				</div>
 				<div th:if="${mostrarInputsOmitidos}" class="form-group row">

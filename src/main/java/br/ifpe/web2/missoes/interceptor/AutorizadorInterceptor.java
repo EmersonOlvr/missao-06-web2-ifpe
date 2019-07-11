@@ -18,7 +18,7 @@ public class AutorizadorInterceptor implements HandlerInterceptor {
 	
 	private static final String[] PAGINAS_DESLOGADO = {"/", "/login"};
 	private static final String[] PAGINAS_LOGADO = {PAGINA_HOME, PAGINA_ACESSO_NEGADO, "/sair", 
-													"/funcionarios/", "/cargos/", "/empresas/"};
+													"/funcionarios/", "/cargos/", "/empresas/", "/departamentos/"};
 	private static final String[] PAGINAS_PRIVADAS = {"/funcionarios/inserir", "/funcionarios/editar/", "/funcionarios/excluir/"};
 	
 	@Override
@@ -39,7 +39,7 @@ public class AutorizadorInterceptor implements HandlerInterceptor {
 				//System.out.println("paginaPrivada: "+contextPath);
 				if (funcEstaLogado) {
 					for (String depAutorizado : DEP_AUTORIZADOS) {
-						if (funcLogado.getDepartamento().equalsIgnoreCase(depAutorizado)) {
+						if (funcLogado.getDepartamento().getNome().equalsIgnoreCase(depAutorizado)) {
 							return true;
 						}
 					}

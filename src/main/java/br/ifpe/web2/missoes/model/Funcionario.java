@@ -69,9 +69,8 @@ public class Funcionario {
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Foto foto;
 	
-	@Column(nullable = false)
-	@NotBlank(message = "Informe o Departamento")
-	private String departamento;
+	@ManyToOne(cascade = CascadeType.ALL)
+	private Departamento departamento;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	private PeriodoFerias periodoFerias;
@@ -84,7 +83,7 @@ public class Funcionario {
 	public Funcionario(
 			String matricula, String nome, String cpf, LocalDate dataNascimento, Cargo cargo, 
 			Empresa empresa, BigDecimal salario, LocalDate dataAdmissao, LocalDate dataDemissao,
-			Endereco endereco, String departamento, PeriodoFerias periodoFerias) {
+			Endereco endereco, Departamento departamento, PeriodoFerias periodoFerias) {
 		this.matricula = matricula;
 		this.nome = nome;
 		this.cpf = cpf;
@@ -172,10 +171,10 @@ public class Funcionario {
 	public void setFoto(Foto foto) {
 		this.foto = foto;
 	}
-	public String getDepartamento() {
+	public Departamento getDepartamento() {
 		return departamento;
 	}
-	public void setDepartamento(String departamento) {
+	public void setDepartamento(Departamento departamento) {
 		this.departamento = departamento;
 	}
 	public PeriodoFerias getPeriodoFerias() {
